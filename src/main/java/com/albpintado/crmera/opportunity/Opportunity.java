@@ -2,9 +2,11 @@ package com.albpintado.crmera.opportunity;
 
 import com.albpintado.crmera.contact.Contact;
 import com.albpintado.crmera.customer.Customer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -29,7 +31,45 @@ public class Opportunity {
   private Customer customer;
 
   @OneToMany(mappedBy = "opportunity")
+  @JsonIgnore
   private List<Contact> contacts = new ArrayList<>();
+
+
+
+  @Column(name = "is_customer", nullable = false, columnDefinition = "boolean default false")
+  private Boolean isCustomer = false;
+
+  @Column(name = "conversion_date")
+  private LocalDateTime conversionDate;
+
+  @ManyToOne(cascade = CascadeType.REMOVE)
+  @JoinColumn(name = "opportunity_id")
+  @JsonIgnore
+  private Opportunity opportunity;
+
+  public Opportunity getOpportunity() {
+    return opportunity;
+  }
+
+  public void setOpportunity(Opportunity opportunity) {
+    this.opportunity = opportunity;
+  }
+
+  public LocalDateTime getConversionDate() {
+    return conversionDate;
+  }
+
+  public void setConversionDate(LocalDateTime conversionDate) {
+    this.conversionDate = conversionDate;
+  }
+
+  public Boolean getIsCustomer() {
+    return isCustomer;
+  }
+
+  public void setIsCustomer(Boolean isCustomer) {
+    this.isCustomer = isCustomer;
+  }
 
   public List<Contact> getContacts() {
     return contacts;

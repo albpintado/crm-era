@@ -28,20 +28,8 @@ public class Contact {
   private ContactMethod method;
 
   @ManyToOne
-  @JoinColumn(name = "opportunity_id", unique = true)
+  @JoinColumn(name = "opportunity_id", nullable = false, unique = true)
   private Opportunity opportunity;
-
-  @ManyToOne
-  @JoinColumn(name = "customer_id")
-  private Customer customer;
-
-  public Customer getCustomer() {
-    return customer;
-  }
-
-  public void setCustomer(Customer customer) {
-    this.customer = customer;
-  }
 
   public Opportunity getOpportunity() {
     return opportunity;

@@ -2,6 +2,7 @@ package com.albpintado.crmera.customer;
 
 import com.albpintado.crmera.contact.Contact;
 import com.albpintado.crmera.opportunity.Opportunity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -25,18 +26,8 @@ public class Customer {
   private String email;
 
   @OneToMany(mappedBy = "customer")
+  @JsonIgnore
   private List<Opportunity> opportunities = new ArrayList<>();
-
-  @OneToMany(mappedBy = "customer")
-  private List<Contact> contacts = new ArrayList<>();
-
-  public List<Contact> getContacts() {
-    return contacts;
-  }
-
-  public void setContacts(List<Contact> contacts) {
-    this.contacts = contacts;
-  }
 
   public List<Opportunity> getOpportunities() {
     return opportunities;
