@@ -48,7 +48,7 @@ public class UserService {
     if (userFromDB.isPresent()) {
       User user = userFromDB.get();
       if (updateUserDto.getName() != null) user.setName(updateUserDto.getName());
-      user.setEmail(updateUserDto.getNewEmail());
+      if (updateUserDto.getNewEmail() != null) user.setEmail(updateUserDto.getNewEmail());
       user.setPassword(updateUserDto.getPassword());
       this.repo.save(user);
       return new ResponseEntity<>(user, HttpStatus.OK);
