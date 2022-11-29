@@ -87,10 +87,11 @@ public class UserServiceTests {
     String oldEmail = "alberto@pintado.com";
     String oldPassword = "12345";
 
-    UserDto userDto = new UserDto();
-    userDto.setName("Luis Pintado");
-    userDto.setEmail("luis@pintado.com");
-    userDto.setPassword("54321");
+    UpdateUserDto updateUserDto = new UpdateUserDto();
+    updateUserDto.setName("Luis Pintado");
+    updateUserDto.setEmail(oldEmail);
+    updateUserDto.setNewEmail("luis@pintado.com");
+    updateUserDto.setPassword("54321");
 
     User oldUser = new User();
     oldUser.setName(oldName);
@@ -99,24 +100,25 @@ public class UserServiceTests {
 
     Mockito.when(this.repo.findOneByEmail(any(String.class))).thenReturn(Optional.of(oldUser));
 
-    ResponseEntity<User> actualResponse = this.service.update(userDto);
+    ResponseEntity<User> actualResponse = this.service.update(updateUserDto);
 
     assertThat(actualResponse.getStatusCode().value(), equalTo(200));
-    assertThat(actualResponse.getBody().getName(), equalTo(userDto.getName()));
-    assertThat(actualResponse.getBody().getEmail(), equalTo(userDto.getEmail()));
-    assertThat(actualResponse.getBody().getPassword(), equalTo(userDto.getPassword()));
+    assertThat(actualResponse.getBody().getName(), equalTo(updateUserDto.getName()));
+    assertThat(actualResponse.getBody().getEmail(), equalTo(updateUserDto.getNewEmail()));
+    assertThat(actualResponse.getBody().getPassword(), equalTo(updateUserDto.getPassword()));
   }
 
   @Test
   public void WhenUpdateOneThatDoesNotExists_ThenShouldReturnsNullAndStatus204() {
-    UserDto userDto = new UserDto();
-    userDto.setName("Alberto Pintado");
-    userDto.setEmail("alberto@pintado.com");
-    userDto.setPassword("12345");
+    UpdateUserDto updateUserDto = new UpdateUserDto();
+    updateUserDto.setName("Alberto Pintado");
+    updateUserDto.setEmail("alberto@pintado.com");
+    updateUserDto.setNewEmail("luis@pintado.com");
+    updateUserDto.setPassword("12345");
 
     Mockito.when(this.repo.findOneByEmail(any(String.class))).thenReturn(Optional.empty());
 
-    ResponseEntity<User> actualResponse = this.service.update(userDto);
+    ResponseEntity<User> actualResponse = this.service.update(updateUserDto);
 
     assertThat(actualResponse.getStatusCode().value(), equalTo(204));
     assertThat(actualResponse.getBody(), is(nullValue()));
