@@ -106,4 +106,19 @@ public class UserServiceTests {
     assertThat(actualResponse.getBody().getEmail(), equalTo(userDto.getEmail()));
     assertThat(actualResponse.getBody().getPassword(), equalTo(userDto.getPassword()));
   }
+
+  @Test
+  public void WhenUpdateOneThatDoesNotExists_ThenShouldReturnsNullAndStatus204() {
+    UserDto userDto = new UserDto();
+    userDto.setName("Alberto Pintado");
+    userDto.setEmail("alberto@pintado.com");
+    userDto.setPassword("12345");
+
+    Mockito.when(this.repo.findOneByEmail(any(String.class))).thenReturn(Optional.empty());
+
+    ResponseEntity<User> actualResponse = this.service.update(userDto);
+
+    assertThat(actualResponse.getStatusCode().value(), equalTo(204));
+    assertThat(actualResponse.getBody(), is(nullValue()));
+  }
 }
