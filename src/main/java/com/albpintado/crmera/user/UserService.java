@@ -15,6 +15,8 @@ public class UserService {
   @Autowired
   private UserRepository repo;
 
+  private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
   public List<User> getAll() {
     return this.repo.findAll();
   }
@@ -25,5 +27,19 @@ public class UserService {
       return new ResponseEntity<>(userFromDb.get(), HttpStatus.OK);
     }
     return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+  }
+
+  public ResponseEntity<User> create(UserDto userDto) {
+    User user = createUserEntity(userDto);
+    this.repo.save(user);
+    return new ResponseEntity<>(user, HttpStatus.CREATED);
+  }
+
+  private User createUserEntity(UserDto userDto) {
+    User user = new User();
+    user.setName(userDto.getName());
+    user.setEmail(userDto.getEmail());
+    user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+    return user;
   }
 }

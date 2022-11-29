@@ -22,4 +22,9 @@ public class UserController {
   public ResponseEntity<User> getOne(@RequestBody UserEmailDto userEmailDto) {
     return this.service.getOne(userEmailDto);
   }
+
+  @PostMapping
+  public ResponseEntity<User> createOne(@RequestBody UserDto userDto) {
+    return this.service.create(userDto);
+  }
 }
