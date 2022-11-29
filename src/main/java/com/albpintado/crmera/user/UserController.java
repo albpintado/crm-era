@@ -29,8 +29,8 @@ public class UserController {
   }
 
   @PutMapping
-  public ResponseEntity<User> update(@RequestBody UserDto userDto) {
-    return this.service.update(userDto);
+  public ResponseEntity<User> update(@RequestBody UpdateUserDto updateUserDto) {
+    return this.service.update(updateUserDto);
   }
 
   @DeleteMapping
