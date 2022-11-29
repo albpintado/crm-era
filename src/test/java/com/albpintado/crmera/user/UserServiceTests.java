@@ -1,21 +1,24 @@
 package com.albpintado.crmera.user;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTests {
-  @Autowired
+  @InjectMocks
   private UserService service;
 
   @Mock
@@ -32,11 +35,11 @@ public class UserServiceTests {
     expectedUser.setEmail(userEmailDto.getEmail());
     expectedUser.setPassword("12345");
 
-    Mockito.when(this.repo.findOneByEmail("alberto@pintado.com")).thenReturn(Optional.of(expectedUser));
+    Mockito.when(this.repo.findOneByEmail(any(String.class))).thenReturn(Optional.of(expectedUser));
 
     ResponseEntity<User> actualResponse = this.service.getOne(userEmailDto);
 
-    assertThat(actualResponse.getStatusCode(), equalTo(200));
+    assertThat(actualResponse.getStatusCode().value(), equalTo(200));
     assertThat(actualResponse.getBody().getId(), equalTo(expectedUser.getId()));
     assertThat(actualResponse.getBody().getName(), equalTo(expectedUser.getName()));
     assertThat(actualResponse.getBody().getEmail(), equalTo(expectedUser.getEmail()));
