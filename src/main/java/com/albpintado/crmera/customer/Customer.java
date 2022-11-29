@@ -1,5 +1,6 @@
 package com.albpintado.crmera.customer;
 
+import com.albpintado.crmera.contact.Contact;
 import com.albpintado.crmera.opportunity.Opportunity;
 
 import javax.persistence.*;
@@ -25,6 +26,17 @@ public class Customer {
 
   @OneToMany(mappedBy = "customer")
   private List<Opportunity> opportunities = new ArrayList<>();
+
+  @OneToMany(mappedBy = "customer")
+  private List<Contact> contacts = new ArrayList<>();
+
+  public List<Contact> getContacts() {
+    return contacts;
+  }
+
+  public void setContacts(List<Contact> contacts) {
+    this.contacts = contacts;
+  }
 
   public List<Opportunity> getOpportunities() {
     return opportunities;

@@ -1,10 +1,11 @@
 package com.albpintado.crmera.opportunity;
 
+import com.albpintado.crmera.contact.Contact;
 import com.albpintado.crmera.customer.Customer;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "opportunity")
@@ -26,6 +27,17 @@ public class Opportunity {
   @ManyToOne
   @JoinColumn(name = "customer_id")
   private Customer customer;
+
+  @OneToMany(mappedBy = "opportunity")
+  private List<Contact> contacts = new ArrayList<>();
+
+  public List<Contact> getContacts() {
+    return contacts;
+  }
+
+  public void setContacts(List<Contact> contacts) {
+    this.contacts = contacts;
+  }
 
   public Customer getCustomer() {
     return customer;
