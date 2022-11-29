@@ -61,7 +61,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void WhenCreateOneWithCorrectDto_ReturnsUserCreated() {
+  public void WhenCreateOneWithCorrectDto_ReturnsUserCreatedAndStatus200() {
     UserDto userDto = new UserDto();
     userDto.setName("Alberto Pintado");
     userDto.setEmail("alberto@pintado.com");
@@ -79,5 +79,31 @@ public class UserServiceTests {
     assertThat(actualResponse.getStatusCode().value(), equalTo(201));
     assertThat(actualResponse.getBody().getName(), is(expectedUser.getName()));
     assertThat(actualResponse.getBody().getEmail(), is(expectedUser.getEmail()));
+  }
+
+  @Test
+  public void WhenUpdateOneThatExists_ThenShouldReturnsUserUpdatedAndStatus200() {
+    String oldName = "Alberto Pintado";
+    String oldEmail = "alberto@pintado.com";
+    String oldPassword = "12345";
+
+    UserDto userDto = new UserDto();
+    userDto.setName("Luis Pintado");
+    userDto.setEmail("luis@pintado.com");
+    userDto.setPassword("54321");
+
+    User oldUser = new User();
+    oldUser.setName(oldName);
+    oldUser.setEmail(oldEmail);
+    oldUser.setPassword(oldPassword);
+
+    Mockito.when(this.repo.findOneByEmail(any(String.class))).thenReturn(Optional.of(oldUser));
+
+    ResponseEntity<User> actualResponse = this.service.update(userDto);
+
+    assertThat(actualResponse.getStatusCode().value(), equalTo(200));
+    assertThat(actualResponse.getBody().getName(), equalTo(userDto.getName()));
+    assertThat(actualResponse.getBody().getEmail(), equalTo(userDto.getEmail()));
+    assertThat(actualResponse.getBody().getPassword(), equalTo(userDto.getPassword()));
   }
 }
