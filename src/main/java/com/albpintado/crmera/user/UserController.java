@@ -27,4 +27,9 @@ public class UserController {
   public ResponseEntity<User> createOne(@RequestBody UserDto userDto) {
     return this.service.create(userDto);
   }
+
+  @PutMapping
+  public ResponseEntity<User> update(@RequestBody UserDto userDto) {
+    return this.service.update(userDto);
+  }
 }

@@ -53,6 +53,6 @@ public class UserService {
       this.repo.save(user);
       return new ResponseEntity<>(user, HttpStatus.OK);
     }
-    return null;
+    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
   }
 }
