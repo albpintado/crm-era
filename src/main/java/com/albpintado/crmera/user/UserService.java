@@ -49,7 +49,7 @@ public class UserService {
       User user = userFromDB.get();
       if (updateUserDto.getName() != null) user.setName(updateUserDto.getName());
       if (updateUserDto.getNewEmail() != null) user.setEmail(updateUserDto.getNewEmail());
-      user.setPassword(updateUserDto.getPassword());
+      if (updateUserDto.getPassword() != null) user.setPassword(updateUserDto.getPassword());
       this.repo.save(user);
       return new ResponseEntity<>(user, HttpStatus.OK);
     }
