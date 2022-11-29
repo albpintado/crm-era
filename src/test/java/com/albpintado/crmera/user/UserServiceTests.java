@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -76,9 +77,7 @@ public class UserServiceTests {
     ResponseEntity<User> actualResponse = this.service.create(userDto);
 
     assertThat(actualResponse.getStatusCode().value(), equalTo(201));
-    assertThat(actualResponse.getBody().getId(), is(expectedUser.getId()));
     assertThat(actualResponse.getBody().getName(), is(expectedUser.getName()));
     assertThat(actualResponse.getBody().getEmail(), is(expectedUser.getEmail()));
-    assertThat(actualResponse.getBody().getPassword(), is(expectedUser.getPassword()));
   }
 }
