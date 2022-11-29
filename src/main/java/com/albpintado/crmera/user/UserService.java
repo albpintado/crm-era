@@ -47,7 +47,7 @@ public class UserService {
     Optional<User> userFromDB = this.repo.findOneByEmail(updateUserDto.getEmail());
     if (userFromDB.isPresent()) {
       User user = userFromDB.get();
-      user.setName(updateUserDto.getName());
+      if (updateUserDto.getName() != null) user.setName(updateUserDto.getName());
       user.setEmail(updateUserDto.getNewEmail());
       user.setPassword(updateUserDto.getPassword());
       this.repo.save(user);
