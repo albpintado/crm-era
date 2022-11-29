@@ -32,4 +32,9 @@ public class UserController {
   public ResponseEntity<User> update(@RequestBody UserDto userDto) {
     return this.service.update(userDto);
   }
+
+  @DeleteMapping
+  public ResponseEntity<Object> delete(@RequestBody UserEmailDto userEmailDto) {
+    return this.service.delete(userEmailDto);
+  }
 }

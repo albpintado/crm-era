@@ -55,4 +55,10 @@ public class UserService {
     }
     return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
   }
+
+  public ResponseEntity<Object> delete(UserEmailDto userEmailDto) {
+    Optional<User> userFromDb = this.repo.findOneByEmail(userEmailDto.getEmail());
+    userFromDb.ifPresent(user -> this.repo.delete(user));
+    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+  }
 }
