@@ -75,6 +75,7 @@ public class UserServiceTests {
 
     ResponseEntity<User> actualResponse = this.service.create(userDto);
 
+    assertThat(actualResponse.getStatusCode().value(), equalTo(201));
     assertThat(actualResponse.getBody().getId(), is(expectedUser.getId()));
     assertThat(actualResponse.getBody().getName(), is(expectedUser.getName()));
     assertThat(actualResponse.getBody().getEmail(), is(expectedUser.getEmail()));
