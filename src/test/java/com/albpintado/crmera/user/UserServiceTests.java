@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Optional;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -21,22 +23,18 @@ public class UserServiceTests {
 
   @Test
   public void WhenGetOneThatExists_ThenShouldReturnsAUserAndStatus200() {
-    UserDto userDto = new UserDto();
-    userDto.setName("Alberto Pintado");
-    userDto.setEmail("alberto@pintado.com");
-    userDto.setPassword("12345");
+    UserEmailDto userEmailDto = new UserEmailDto();
+    userEmailDto.setEmail("alberto@pintado.com");
 
     User expectedUser = new User();
     expectedUser.setId(1L);
     expectedUser.setName("Alberto Pintado");
-    expectedUser.setEmail("alberto@pintado.com");
+    expectedUser.setEmail(userEmailDto.getEmail());
     expectedUser.setPassword("12345");
 
-    ResponseEntity<User> expectedResponse = new ResponseEntity<>(expectedUser, HttpStatus.OK);
+    Mockito.when(this.repo.findOneByEmail("alberto@pintado.com")).thenReturn(Optional.of(expectedUser));
 
-    Mockito.when(this.repo.findOneByEmail("alberto@pintado.com")).thenReturn(expectedResponse);
-
-    ResponseEntity<User> actualResponse = this.service.create(userDto);
+    ResponseEntity<User> actualResponse = this.service.getOne(userEmailDto);
 
     assertThat(actualResponse.getStatusCode(), equalTo(200));
     assertThat(actualResponse.getBody().getId(), equalTo(expectedUser.getId()));
