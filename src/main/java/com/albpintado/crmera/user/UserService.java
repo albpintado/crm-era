@@ -42,4 +42,17 @@ public class UserService {
     user.setPassword(passwordEncoder.encode(userDto.getPassword()));
     return user;
   }
+
+  public ResponseEntity<User> update(UserDto userDto) {
+    Optional<User> userFromDB = this.repo.findOneByEmail(userDto.getEmail());
+    if (userFromDB.isPresent()) {
+      User user = userFromDB.get();
+      user.setName(userDto.getName());
+      user.setEmail(userDto.getEmail());
+      user.setPassword(userDto.getPassword());
+      this.repo.save(user);
+      return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+    return null;
+  }
 }
