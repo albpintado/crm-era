@@ -12,8 +12,9 @@ import org.springframework.http.ResponseEntity;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
@@ -44,5 +45,18 @@ public class UserServiceTests {
     assertThat(actualResponse.getBody().getName(), equalTo(expectedUser.getName()));
     assertThat(actualResponse.getBody().getEmail(), equalTo(expectedUser.getEmail()));
     assertThat(actualResponse.getBody().getPassword(), equalTo(expectedUser.getPassword()));
+  }
+
+  @Test
+  public void WhenGetOneThatDoesNotExists_ThenShouldReturnsNullAndStatus204() {
+    UserEmailDto userEmailDto = new UserEmailDto();
+    userEmailDto.setEmail("alberto@lozano.com");
+
+    Mockito.when(this.repo.findOneByEmail(any(String.class))).thenReturn(Optional.empty());
+
+    ResponseEntity<User> actualResponse = this.service.getOne(userEmailDto);
+
+    assertThat(actualResponse.getStatusCode().value(), equalTo(204));
+    assertThat(actualResponse.getBody(), is(nullValue()));
   }
 }

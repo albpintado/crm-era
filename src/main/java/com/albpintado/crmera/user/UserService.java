@@ -24,6 +24,6 @@ public class UserService {
     if (userFromDb.isPresent()) {
       return new ResponseEntity<>(userFromDb.get(), HttpStatus.OK);
     }
-    return null;
+    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
   }
 }
