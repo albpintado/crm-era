@@ -43,13 +43,13 @@ public class UserService {
     return user;
   }
 
-  public ResponseEntity<User> update(UserDto userDto) {
-    Optional<User> userFromDB = this.repo.findOneByEmail(userDto.getEmail());
+  public ResponseEntity<User> update(UpdateUserDto updateUserDto) {
+    Optional<User> userFromDB = this.repo.findOneByEmail(updateUserDto.getEmail());
     if (userFromDB.isPresent()) {
       User user = userFromDB.get();
-      user.setName(userDto.getName());
-      user.setEmail(userDto.getEmail());
-      user.setPassword(userDto.getPassword());
+      user.setName(updateUserDto.getName());
+      user.setEmail(updateUserDto.getNewEmail());
+      user.setPassword(updateUserDto.getPassword());
       this.repo.save(user);
       return new ResponseEntity<>(user, HttpStatus.OK);
     }
