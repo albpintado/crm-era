@@ -123,4 +123,27 @@ public class UserServiceTests {
     assertThat(actualResponse.getStatusCode().value(), equalTo(204));
     assertThat(actualResponse.getBody(), is(nullValue()));
   }
+
+  @Test
+  public void WhenUpdateOneThatExists_ThenShouldChangeNameIfIsNotNull() {
+    String oldName = "Alberto Pintado";
+    String oldEmail = "alberto@pintado.com";
+    String oldPassword = "12345";
+
+    UpdateUserDto updateUserDto = new UpdateUserDto();
+    updateUserDto.setEmail(oldEmail);
+    updateUserDto.setNewEmail("luis@pintado.com");
+    updateUserDto.setPassword("54321");
+
+    User oldUser = new User();
+    oldUser.setName(oldName);
+    oldUser.setEmail(oldEmail);
+    oldUser.setPassword(oldPassword);
+
+    Mockito.when(this.repo.findOneByEmail(any(String.class))).thenReturn(Optional.of(oldUser));
+
+    ResponseEntity<User> actualResponse = this.service.update(updateUserDto);
+    System.out.println(actualResponse.getBody().getName() + actualResponse.getBody().getEmail() + actualResponse.getBody().getPassword());
+    assertThat(actualResponse.getBody().getName(), equalTo(oldName));
+  }
 }
