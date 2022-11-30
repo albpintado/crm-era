@@ -47,4 +47,13 @@ public class ContactService {
     }
     return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
   }
+
+  public ResponseEntity<Object> delete(String id) {
+    Optional<Contact> contactFromDb = this.repo.findById(Long.valueOf(id));
+    if (contactFromDb.isPresent()) {
+      this.repo.delete(contactFromDb.get());
+      return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+  }
 }
