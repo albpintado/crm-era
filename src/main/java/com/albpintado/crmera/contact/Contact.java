@@ -1,10 +1,9 @@
 package com.albpintado.crmera.contact;
 
-import com.albpintado.crmera.customer.Customer;
 import com.albpintado.crmera.opportunity.Opportunity;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "contact")
@@ -18,7 +17,7 @@ public class Contact {
   private String name;
 
   @Column(name = "date", nullable = false)
-  private LocalDateTime date;
+  private LocalDate date;
 
   @Column(name = "details")
   private String details;
@@ -28,7 +27,7 @@ public class Contact {
   private ContactMethod method;
 
   @ManyToOne
-  @JoinColumn(name = "opportunity_id", nullable = false, unique = true)
+  @JoinColumn(name = "opportunity_id", nullable = false)
   private Opportunity opportunity;
 
   public Opportunity getOpportunity() {
@@ -55,11 +54,11 @@ public class Contact {
     this.details = details;
   }
 
-  public LocalDateTime getDate() {
+  public LocalDate getDate() {
     return date;
   }
 
-  public void setDate(LocalDateTime date) {
+  public void setDate(LocalDate date) {
     this.date = date;
   }
 

@@ -1,23 +1,25 @@
 package com.albpintado.crmera.contact;
 
-import com.albpintado.crmera.user.User;
-import com.albpintado.crmera.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("contacts")
+@RequestMapping("api/contacts")
 public class ContactController {
 
   @Autowired
   private ContactService service;
 
-  @GetMapping(path = "/all")
+  @GetMapping
   public List<Contact> getAll() {
     return this.service.getAll();
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<Contact> getOne(@PathVariable String id) {
+    return this.service.getOne(id);
   }
 }

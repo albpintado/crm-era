@@ -1,6 +1,7 @@
 package com.albpintado.crmera.opportunity;
 
 import com.albpintado.crmera.contact.Contact;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -35,7 +36,8 @@ public class Opportunity {
   private LocalDateTime conversionDate;
 
   @ManyToOne(optional = false)
-  @JoinColumn(name = "parent_opportunity", nullable = false)
+  @JoinColumn(name = "parent_opportunity", nullable = true)
+  @JsonBackReference
   private Opportunity opportunity;
 
   public Opportunity getOpportunity() {
