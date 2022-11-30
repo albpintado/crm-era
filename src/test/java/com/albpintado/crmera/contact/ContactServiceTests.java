@@ -219,4 +219,26 @@ public class ContactServiceTests {
     assertThat(actualContacts.getStatusCode().value(), equalTo(204));
     assertThat(actualContacts.getBody(), is(nullValue()));
   }
+
+  @Test
+  public void WhenGetByOpportunityAfterConversion_ReturnsListOfContactsAndStatus200() {
+    Opportunity opportunity = createMockOpportunity();
+    Contact contact1 = createNewContact(1L, "Call with Paco", "12-31-2022", "Something", "EMAIL");
+    Contact contact2 = createNewContact(2L, "Call with Paco", "12-31-2022", "Something", "EMAIL");
+    Contact contact3 = createNewContact(3L, "Call with Paco", "02-01-2023", "Something", "EMAIL");
+    List<Contact> expectedContacts = new ArrayList<>();
+    expectedContacts.add(contact1);
+    expectedContacts.add(contact2);
+    expectedContacts.add(contact3);
+
+    Mockito.when(this.opportunityRepository.findById(any(Long.class))).thenReturn(Optional.of(opportunity));
+    Mockito.when(this.contactRepository.findByOpportunity_Id(any(Long.class))).thenReturn(expectedContacts);
+
+    ResponseEntity<List<Contact>> actualContacts =
+            this.service.getAllByOpportunityAfterConversion("1");
+
+    assertThat(actualContacts.getStatusCode().value(), equalTo(200));
+    assertThat(actualContacts.getBody().size(), is(1));
+    assertThat(actualContacts.getBody().get(0)).usingRecursiveComparison().isEqualTo(contact3);
+  }
 }
