@@ -2,6 +2,8 @@ package com.albpintado.crmera.contact;
 
 import com.albpintado.crmera.opportunity.Opportunity;
 import com.albpintado.crmera.opportunity.OpportunityRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,18 +11,26 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.albpintado.crmera.utils.Utils.createLocalDate;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
@@ -34,6 +44,19 @@ public class ContactServiceTests {
 
   @Mock
   private OpportunityRepository opportunityRepository;
+
+  private List<Contact> contactsDummyList = new ArrayList<>();
+
+  @BeforeEach
+  public void setUp() {
+    Contact contact1 = createNewContact(1L, "Call with Paco", "12-31-2022", "Something", "EMAIL");
+    Contact contact2 = createNewContact(3L, "Call with Paco", "02-01-2023", "Something", "EMAIL");
+
+    for (int i = 0; i < 20; i++) {
+      this.contactsDummyList.add(contact1);
+      this.contactsDummyList.add(contact2);
+    }
+  }
 
   private Opportunity createMockOpportunity() {
     Opportunity expectedOpportunity = new Opportunity();
@@ -199,7 +222,7 @@ public class ContactServiceTests {
     expectedContacts.add(contact3);
 
     Mockito.when(this.opportunityRepository.findById(any(Long.class))).thenReturn(Optional.of(opportunity));
-    Mockito.when(this.contactRepository.findByOpportunity_Id(any(Long.class))).thenReturn(expectedContacts);
+    Mockito.when(this.contactRepository.findByOpportunityId(any(Long.class))).thenReturn(expectedContacts);
 
     ResponseEntity<List<Contact>> actualContacts =
             this.service.getAllByOpportunityBeforeConversion("1");
@@ -232,7 +255,7 @@ public class ContactServiceTests {
     expectedContacts.add(contact3);
 
     Mockito.when(this.opportunityRepository.findById(any(Long.class))).thenReturn(Optional.of(opportunity));
-    Mockito.when(this.contactRepository.findByOpportunity_Id(any(Long.class))).thenReturn(expectedContacts);
+    Mockito.when(this.contactRepository.findByOpportunityId(any(Long.class))).thenReturn(expectedContacts);
 
     ResponseEntity<List<Contact>> actualContacts =
             this.service.getAllByOpportunityAfterConversion("1");
@@ -251,5 +274,28 @@ public class ContactServiceTests {
 
     assertThat(actualContacts.getStatusCode().value(), equalTo(204));
     assertThat(actualContacts.getBody(), is(nullValue()));
+  }
+
+  @Test
+  public void WhenGetContactsInPageInCurrentPage_ReturnsAMapWithContactsAndStatus200() {
+    Sort sort = Sort.by(Sort.Direction.ASC, "id");
+    PageRequest page = PageRequest.of(0, 10, sort);
+
+    Page<Contact> expectedContactsPage = new PageImpl<>(this.contactsDummyList.subList(0, 10), page, 25);
+
+    when(this.contactRepository.findAll(any(PageRequest.class))).thenReturn(expectedContactsPage);
+
+    ResponseEntity<Map<String, Object>> actualResponse = this.service.getContactsInPage(0);
+
+    verify(this.contactRepository).findAll(page);
+
+    assertThat(actualResponse.getStatusCode().value(), equalTo(200));
+    assertEquals(expectedContactsPage.getTotalElements(), actualResponse.getBody().get("totalContacts"));
+    assertEquals(expectedContactsPage.getContent(), actualResponse.getBody().get("contacts"));
+  }
+
+  @AfterEach
+  public void teardown() {
+    this.contactsDummyList.clear();
   }
 }
