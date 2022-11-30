@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity
@@ -33,7 +33,7 @@ public class Opportunity {
   private Boolean isCustomer = false;
 
   @Column(name = "conversion_date")
-  private LocalDateTime conversionDate;
+  private LocalDate conversionDate;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "parent_opportunity", nullable = true)
@@ -48,11 +48,11 @@ public class Opportunity {
     this.opportunity = opportunity;
   }
 
-  public LocalDateTime getConversionDate() {
+  public LocalDate getConversionDate() {
     return conversionDate;
   }
 
-  public void setConversionDate(LocalDateTime conversionDate) {
+  public void setConversionDate(LocalDate conversionDate) {
     this.conversionDate = conversionDate;
   }
 
