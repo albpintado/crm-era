@@ -55,10 +55,8 @@ public class ContactService {
 
       return new ResponseEntity<>(contactsBeforeConversion, HttpStatus.OK);
     }
-    return null;
+    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
   }
-
-
 
   public ResponseEntity<Contact> create(ContactDto contactDto) {
     Contact contactToSave = createContactToSaveOnDb(contactDto);
