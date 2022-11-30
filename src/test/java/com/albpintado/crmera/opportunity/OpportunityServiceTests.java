@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static com.albpintado.crmera.utils.Utils.createLocalDate;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
@@ -38,6 +38,16 @@ public class OpportunityServiceTests {
 
     assertThat(actualResponse.getStatusCode().value(), equalTo(200));
     Assertions.assertThat(actualResponse.getBody()).usingRecursiveComparison().isEqualTo(expectedOpportunity);
+  }
+
+  @Test
+  public void WhenGetOneThatDoesNotExists_ThenShouldReturnsNullAndStatus204() {
+    Mockito.when(this.opportunityRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+    ResponseEntity<Opportunity> actualResponse = this.opportunityService.getOne("12");
+
+    assertThat(actualResponse.getStatusCode().value(), equalTo(204));
+    assertThat(actualResponse.getBody(), is(nullValue()));
   }
 
   private Opportunity createMockOpportunity() {
