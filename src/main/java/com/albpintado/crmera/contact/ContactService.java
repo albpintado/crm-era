@@ -3,14 +3,15 @@ package com.albpintado.crmera.contact;
 import com.albpintado.crmera.opportunity.Opportunity;
 import com.albpintado.crmera.opportunity.OpportunityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.albpintado.crmera.utils.Utils.createLocalDate;
 
@@ -27,6 +28,22 @@ public class ContactService {
     return this.contactRepository.findAll();
   }
 
+  public ResponseEntity<Map<String, Object>> getContactsInPage(int currentPage) {
+    Page<Contact> contactsPage;
+
+    Sort sort = Sort.by(Sort.Direction.ASC, "id");
+    PageRequest page = PageRequest.of(currentPage, 10, sort);
+    contactsPage = this.contactRepository.findAll(page);
+
+    Map<String, Object> contactsInPage = new HashMap<>();
+    contactsInPage.put("contacts", contactsPage.getContent());
+    contactsInPage.put("currentPage", contactsPage.getNumber());
+    contactsInPage.put("totalPages", contactsPage.getTotalPages());
+    contactsInPage.put("totalContacts", contactsPage.getTotalElements());
+
+    return new ResponseEntity<>(contactsInPage, HttpStatus.OK);
+}
+
   public ResponseEntity<Contact> getOne(String id) {
     Optional<Contact> userFromDb = this.contactRepository.findById(Long.valueOf(id));
     if (userFromDb.isPresent()) {
@@ -36,7 +53,7 @@ public class ContactService {
   }
 
   public List<Contact> getAllByOpportunity(String id) {
-    return this.contactRepository.findByOpportunity_Id(Long.valueOf(id));
+    return this.contactRepository.findByOpportunityId(Long.valueOf(id));
   }
 
   public ResponseEntity<List<Contact>> getAllByOpportunityBeforeConversion(String id) {
@@ -44,7 +61,7 @@ public class ContactService {
 
     if (opportunityFromContact.isPresent()) {
       Opportunity opportunity = opportunityFromContact.get();
-      List<Contact> allContactsFromOpportunity = this.contactRepository.findByOpportunity_Id(Long.valueOf(id));
+      List<Contact> allContactsFromOpportunity = this.contactRepository.findByOpportunityId(Long.valueOf(id));
       List<Contact> contactsBeforeConversion = new ArrayList<>();
 
       for (Contact contact : allContactsFromOpportunity) {
@@ -63,7 +80,7 @@ public class ContactService {
 
     if (opportunityFromContact.isPresent()) {
       Opportunity opportunity = opportunityFromContact.get();
-      List<Contact> allContactsFromOpportunity = this.contactRepository.findByOpportunity_Id(Long.valueOf(id));
+      List<Contact> allContactsFromOpportunity = this.contactRepository.findByOpportunityId(Long.valueOf(id));
       List<Contact> contactsBeforeConversion = new ArrayList<>();
 
       for (Contact contact : allContactsFromOpportunity) {
