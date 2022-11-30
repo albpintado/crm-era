@@ -208,4 +208,15 @@ public class ContactServiceTests {
     assertThat(actualContacts.getBody().size(), is(2));
     assertThat(actualContacts.getBody().get(0)).usingRecursiveComparison().isEqualTo(contact1);
   }
+
+  @Test
+  public void WhenGetByOpportunityThatDoesNotExistAfterConversion_ReturnsNullAndStatus204() {
+    Mockito.when(this.opportunityRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+    ResponseEntity<List<Contact>> actualContacts =
+            this.service.getAllByOpportunityBeforeConversion("1");
+
+    assertThat(actualContacts.getStatusCode().value(), equalTo(204));
+    assertThat(actualContacts.getBody(), is(nullValue()));
+  }
 }
