@@ -118,7 +118,7 @@ public class ContactServiceTests {
   }
 
   @Test
-  public void WhenUpdateOneThatExists_ThenShouldNotChangeNameIfIsNull() {
+  public void WhenUpdateOneThatExists_ThenShouldNotChangeAttributeIfIsNull() {
     ContactDto contactDto = createDto();
     contactDto.setName(null);
 

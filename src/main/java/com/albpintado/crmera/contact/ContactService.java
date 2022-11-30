@@ -34,8 +34,8 @@ public class ContactService {
     if (contactFromDb.isPresent()) {
       Contact contact = contactFromDb.get();
       if (contactDto.getName() != null) contact.setName(contactDto.getName());
-      contact.setDetails(contactDto.getDetails());
-      contact.setMethod(ContactMethod.valueOf(contactDto.getMethod()));
+      if (contactDto.getName() != null) contact.setDetails(contactDto.getDetails());
+      if (contactDto.getName() != null) contact.setMethod(ContactMethod.valueOf(contactDto.getMethod()));
 
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
       formatter = formatter.withLocale(Locale.US);
