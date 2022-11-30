@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -55,6 +57,14 @@ public class ContactServiceTests {
     return contactDto;
   }
 
+  private LocalDate createLocalDate(String stringDate) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+    formatter = formatter.withLocale(Locale.US);
+    LocalDate date = LocalDate.parse(stringDate, formatter);
+
+    return date;
+  }
+
   @Test
   public void WhenGetOneThatExists_ThenShouldReturnsAContactAndStatus200() {
     Contact expectedContact = createContact();
@@ -80,6 +90,7 @@ public class ContactServiceTests {
   @Test
   public void WhenUpdateOneThatExists_ThenShouldReturnsContactUpdatedAndStatus200() {
     ContactDto contactDto = createDto();
+    LocalDate dateFromDto = createLocalDate(contactDto.getDate());
     Contact oldContact = createContact();
 
     Mockito.when(this.repo.findById(any(Long.class))).thenReturn(Optional.of(oldContact));
@@ -89,8 +100,8 @@ public class ContactServiceTests {
     assertThat(actualResponse.getStatusCode().value(), equalTo(200));
     assertThat(actualResponse.getBody().getName(), equalTo(contactDto.getName()));
     assertThat(actualResponse.getBody().getDetails(), equalTo(contactDto.getDetails()));
-    assertThat(actualResponse.getBody().getMethod(), equalTo(contactDto.getMethod()));
-    assertThat(actualResponse.getBody().getDate(), equalTo(contactDto.getDate()));
+    assertThat(actualResponse.getBody().getMethod(), equalTo(ContactMethod.valueOf(contactDto.getMethod())));
+    assertThat(actualResponse.getBody().getDate(), equalTo(dateFromDto));
     assertThat(actualResponse.getBody().getOpportunity().getName(), equalTo(contactDto.getOpportunityName()));
   }
 }
