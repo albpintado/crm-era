@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
@@ -46,5 +46,15 @@ public class ContactServiceTests {
 
     assertThat(actualResponse.getStatusCode().value(), equalTo(200));
     assertThat(actualResponse.getBody()).usingRecursiveComparison().isEqualTo(expectedContact);
+  }
+
+  @Test
+  public void WhenGetOneThatDoesNotExists_ThenShouldReturnsNullAndStatus204() {
+    Mockito.when(this.repo.findById(any(Long.class))).thenReturn(Optional.empty());
+
+    ResponseEntity<Contact> actualResponse = this.service.getOne("12");
+
+    assertThat(actualResponse.getStatusCode().value(), equalTo(204));
+    assertThat(actualResponse.getBody(), is(nullValue()));
   }
 }
