@@ -7,19 +7,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("/api/users")
 public class UserController {
   @Autowired
   private UserService service;
 
-  @GetMapping(path = "/all")
+  @GetMapping
   public List<User> getAll() {
     return this.service.getAll();
   }
 
-  @GetMapping
-  public ResponseEntity<User> getOne(@RequestBody UserEmailDto userEmailDto) {
-    return this.service.getOne(userEmailDto);
+  @GetMapping("/{id}")
+  public ResponseEntity<User> getOne(@PathVariable String id) {
+    return this.service.getOne(id);
   }
 
   @PostMapping
@@ -27,13 +27,13 @@ public class UserController {
     return this.service.create(userDto);
   }
 
-  @PutMapping
-  public ResponseEntity<User> update(@RequestBody UpdateUserDto updateUserDto) {
-    return this.service.update(updateUserDto);
+  @PutMapping("/{id}")
+  public ResponseEntity<User> update(@PathVariable String id, @RequestBody UserDto userDto) {
+    return this.service.update(id, userDto);
   }
 
-  @DeleteMapping
-  public ResponseEntity<Object> delete(@RequestBody UserEmailDto userEmailDto) {
-    return this.service.delete(userEmailDto);
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Object> delete(@PathVariable String id) {
+    return this.service.delete(id);
   }
 }

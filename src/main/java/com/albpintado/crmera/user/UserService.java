@@ -21,8 +21,8 @@ public class UserService {
     return this.repo.findAll();
   }
 
-  public ResponseEntity<User> getOne(UserEmailDto userEmailDto) {
-    Optional<User> userFromDb = this.repo.findOneByEmail(userEmailDto.getEmail());
+  public ResponseEntity<User> getOne(String id) {
+    Optional<User> userFromDb = this.repo.findById(Long.valueOf(id));
     if (userFromDb.isPresent()) {
       return new ResponseEntity<>(userFromDb.get(), HttpStatus.OK);
     }
@@ -43,21 +43,21 @@ public class UserService {
     return user;
   }
 
-  public ResponseEntity<User> update(UpdateUserDto updateUserDto) {
-    Optional<User> userFromDB = this.repo.findOneByEmail(updateUserDto.getEmail());
+  public ResponseEntity<User> update(String id, UserDto userDto) {
+    Optional<User> userFromDB = this.repo.findById(Long.valueOf(id));
     if (userFromDB.isPresent()) {
       User user = userFromDB.get();
-      if (updateUserDto.getName() != null) user.setName(updateUserDto.getName());
-      if (updateUserDto.getNewEmail() != null) user.setEmail(updateUserDto.getNewEmail());
-      if (updateUserDto.getPassword() != null) user.setPassword(updateUserDto.getPassword());
+      if (userDto.getName() != null) user.setName(userDto.getName());
+      if (userDto.getEmail() != null) user.setEmail(userDto.getEmail());
+      if (userDto.getPassword() != null) user.setPassword(userDto.getPassword());
       this.repo.save(user);
       return new ResponseEntity<>(user, HttpStatus.OK);
     }
     return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
   }
 
-  public ResponseEntity<Object> delete(UserEmailDto userEmailDto) {
-    Optional<User> userFromDb = this.repo.findOneByEmail(userEmailDto.getEmail());
+  public ResponseEntity<Object> delete(String id) {
+    Optional<User> userFromDb = this.repo.findById(Long.valueOf(id));
     userFromDb.ifPresent(user -> this.repo.delete(user));
     return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
   }
