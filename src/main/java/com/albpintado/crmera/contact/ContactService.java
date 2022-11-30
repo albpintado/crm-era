@@ -75,7 +75,7 @@ public class ContactService {
 
       return new ResponseEntity<>(contactsBeforeConversion, HttpStatus.OK);
     }
-    return null;
+    return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NO_CONTENT);
   }
 
   public ResponseEntity<Contact> create(ContactDto contactDto) {
