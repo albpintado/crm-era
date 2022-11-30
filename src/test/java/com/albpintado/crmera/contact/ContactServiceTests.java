@@ -210,7 +210,7 @@ public class ContactServiceTests {
   }
 
   @Test
-  public void WhenGetByOpportunityThatDoesNotExistAfterConversion_ReturnsNullAndStatus204() {
+  public void WhenGetByOpportunityThatDoesNotExistBeforeConversion_ReturnsNullAndStatus204() {
     Mockito.when(this.opportunityRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
     ResponseEntity<List<Contact>> actualContacts =
@@ -240,5 +240,16 @@ public class ContactServiceTests {
     assertThat(actualContacts.getStatusCode().value(), equalTo(200));
     assertThat(actualContacts.getBody().size(), is(1));
     assertThat(actualContacts.getBody().get(0)).usingRecursiveComparison().isEqualTo(contact3);
+  }
+
+  @Test
+  public void WhenGetByOpportunityThatDoesNotExistAfterConversion_ReturnsNullAndStatus204() {
+    Mockito.when(this.opportunityRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+    ResponseEntity<List<Contact>> actualContacts =
+            this.service.getAllByOpportunityAfterConversion("1");
+
+    assertThat(actualContacts.getStatusCode().value(), equalTo(204));
+    assertThat(actualContacts.getBody(), is(nullValue()));
   }
 }
