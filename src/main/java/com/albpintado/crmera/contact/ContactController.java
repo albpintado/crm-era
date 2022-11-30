@@ -33,6 +33,11 @@ public class ContactController {
     return this.service.getAllByOpportunityBeforeConversion(id);
   }
 
+  @GetMapping("/opportunity/{id}/after-conversion")
+  public ResponseEntity<List<Contact>> getAllByOpportunityAfterConversion(@PathVariable String id) {
+    return this.service.getAllByOpportunityAfterConversion(id);
+  }
+
   @PostMapping
   public ResponseEntity<Contact> create(@RequestBody ContactDto contactDto) {
     return this.service.create(contactDto);

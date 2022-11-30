@@ -58,6 +58,26 @@ public class ContactService {
     return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
   }
 
+  public ResponseEntity<List<Contact>> getAllByOpportunityAfterConversion(String id) {
+    Optional<Opportunity> opportunityFromContact = this.opportunityRepository.findById(Long.valueOf(id));
+
+    if (opportunityFromContact.isPresent()) {
+      Opportunity opportunity = opportunityFromContact.get();
+      List<Contact> allContactsFromOpportunity = this.contactRepository.findByOpportunity_Id(Long.valueOf(id));
+      List<Contact> contactsBeforeConversion = new ArrayList<>();
+
+      for (Contact contact : allContactsFromOpportunity) {
+        LocalDate conversionDateToAlsoMatchSameDates = opportunity.getConversionDate().minusDays(1);
+        if (contact.getDate().isAfter(conversionDateToAlsoMatchSameDates)) {
+          contactsBeforeConversion.add(contact);
+        }
+      }
+
+      return new ResponseEntity<>(contactsBeforeConversion, HttpStatus.OK);
+    }
+    return null;
+  }
+
   public ResponseEntity<Contact> create(ContactDto contactDto) {
     Contact contactToSave = createContactToSaveOnDb(contactDto);
     Optional<Opportunity> opportunityAssignedToContactFromDb = this.opportunityRepository.findById(contactDto.getOpportunityId());
