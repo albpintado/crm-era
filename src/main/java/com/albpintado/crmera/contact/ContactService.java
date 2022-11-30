@@ -147,8 +147,8 @@ public class ContactService {
 
   private Contact updateContactBeforeSaveOnDb(Contact contactToUpdate, ContactDto contactDto) {
     if (contactDto.getName() != null) contactToUpdate.setName(contactDto.getName());
-    if (contactDto.getName() != null) contactToUpdate.setDetails(contactDto.getDetails());
-    if (contactDto.getName() != null) contactToUpdate.setMethod(ContactMethod.valueOf(contactDto.getMethod()));
+    if (contactDto.getDetails() != null) contactToUpdate.setDetails(contactDto.getDetails());
+    if (contactDto.getMethod() != null) contactToUpdate.setMethod(ContactMethod.valueOf(contactDto.getMethod()));
 
     LocalDate date = createLocalDate(contactDto.getDate());
     if (contactDto.getDate() != null) contactToUpdate.setDate(date);
