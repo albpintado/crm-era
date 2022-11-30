@@ -285,7 +285,7 @@ public class ContactServiceTests {
 
     when(this.contactRepository.findAll(any(PageRequest.class))).thenReturn(expectedContactsPage);
 
-    ResponseEntity<Map<String, Object>> actualResponse = this.service.getContactsInPage(0);
+    ResponseEntity<Map<String, Object>> actualResponse = this.service.getContactsInPage(null, 0);
 
     verify(this.contactRepository).findAll(page);
 
