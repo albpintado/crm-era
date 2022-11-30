@@ -5,7 +5,7 @@ public class ContactDto {
   private String date;
   private String details;
   private String method;
-  private String opportunityName;
+  private Long opportunityId;
 
   public String getName() {
     return name;
@@ -39,11 +39,11 @@ public class ContactDto {
     this.method = method;
   }
 
-  public String getOpportunityName() {
-    return opportunityName;
+  public Long getOpportunityId() {
+    return opportunityId;
   }
 
-  public void setOpportunityName(String opportunityName) {
-    this.opportunityName = opportunityName;
+  public void setOpportunityId(Long opportunityId) {
+    this.opportunityId = opportunityId;
   }
 }
