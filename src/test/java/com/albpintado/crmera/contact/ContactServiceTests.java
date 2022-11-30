@@ -11,10 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
@@ -292,6 +289,26 @@ public class ContactServiceTests {
     assertThat(actualResponse.getStatusCode().value(), equalTo(200));
     assertEquals(expectedContactsPage.getTotalElements(), actualResponse.getBody().get("totalContacts"));
     assertEquals(expectedContactsPage.getContent(), actualResponse.getBody().get("contacts"));
+  }
+
+  @Test
+  public void WhenGetContactsInPageInCurrentPageWithNameQueryParam_ReturnsAMapWithContactsAndStatus200() {
+    Sort sort = Sort.by(Sort.Direction.ASC, "id");
+    PageRequest page = PageRequest.of(0, 10, sort);
+
+    Page<Contact> expectedContactsPage = new PageImpl<>(new ArrayList<>(this.contactsDummyList.subList(0, 10)));
+
+    when(this.contactRepository.findByNameContaining(any(String.class), any(Pageable.class)))
+            .thenReturn(expectedContactsPage);
+
+    ResponseEntity<Map<String, Object>> actualResponse =
+            this.service.getContactsInPage("paco", 0);
+
+    verify(this.contactRepository).findByNameContaining("paco", page);
+
+    assertThat(actualResponse.getStatusCode().value(), equalTo(200));
+    assertThat(actualResponse.getBody().get("totalContacts"), equalTo(expectedContactsPage.getTotalElements()));
+    assertThat(actualResponse.getBody().get("contacts"), equalTo(expectedContactsPage.getContent()));
   }
 
   @AfterEach
