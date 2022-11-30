@@ -116,4 +116,17 @@ public class ContactServiceTests {
     assertThat(actualResponse.getStatusCode().value(), equalTo(204));
     assertThat(actualResponse.getBody(), is(nullValue()));
   }
+
+  @Test
+  public void WhenUpdateOneThatExists_ThenShouldNotChangeNameIfIsNull() {
+    ContactDto contactDto = createDto();
+    contactDto.setName(null);
+
+    Contact oldContact = createContact();
+
+    Mockito.when(this.repo.findById(any(Long.class))).thenReturn(Optional.of(oldContact));
+
+    ResponseEntity<Contact> actualResponse = this.service.update("1", contactDto);
+    assertThat(actualResponse.getBody().getName(), equalTo(oldContact));
+  }
 }
