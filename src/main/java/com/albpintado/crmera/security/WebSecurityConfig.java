@@ -19,7 +19,7 @@ public class WebSecurityConfig {
   Get a IUserDetails object to check if an account that
   matches the email sent exists in DB.
   */
-  private final IUserDetails userDetailsService;
+  private final IUserDetailsService userDetailsService;
 
   /*
   Get the JWTAuthorizationFilter to filter the request in
@@ -27,8 +27,8 @@ public class WebSecurityConfig {
   */
   private final JWTAuthorizationFilter jwtAuthorizationFilter;
 
-  public WebSecurityConfig(IUserDetails IUserDetails, JWTAuthorizationFilter jwtAuthorizationFilter) {
-    this.userDetailsService = IUserDetails;
+  public WebSecurityConfig(IUserDetailsService IUserDetailsService, JWTAuthorizationFilter jwtAuthorizationFilter) {
+    this.userDetailsService = IUserDetailsService;
     this.jwtAuthorizationFilter = jwtAuthorizationFilter;
   }
 

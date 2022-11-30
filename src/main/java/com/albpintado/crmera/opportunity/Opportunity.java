@@ -1,9 +1,7 @@
 package com.albpintado.crmera.opportunity;
 
 import com.albpintado.crmera.contact.Contact;
-import com.albpintado.crmera.customer.Customer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,15 +24,9 @@ public class Opportunity {
   @Column(name = "email", nullable = false)
   private String email;
 
-  @ManyToOne
-  @JoinColumn(name = "customer_id")
-  private Customer customer;
-
   @OneToMany(mappedBy = "opportunity")
   @JsonIgnore
   private List<Contact> contacts = new ArrayList<>();
-
-
 
   @Column(name = "is_customer", nullable = false, columnDefinition = "boolean default false")
   private Boolean isCustomer = false;
@@ -42,9 +34,8 @@ public class Opportunity {
   @Column(name = "conversion_date")
   private LocalDateTime conversionDate;
 
-  @ManyToOne(cascade = CascadeType.REMOVE)
-  @JoinColumn(name = "opportunity_id")
-  @JsonIgnore
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "parent_opportunity", nullable = false)
   private Opportunity opportunity;
 
   public Opportunity getOpportunity() {
@@ -79,14 +70,6 @@ public class Opportunity {
     this.contacts = contacts;
   }
 
-  public Customer getCustomer() {
-    return customer;
-  }
-
-  public void setCustomer(Customer customer) {
-    this.customer = customer;
-  }
-
   public String getEmail() {
     return email;
   }
@@ -117,18 +100,5 @@ public class Opportunity {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-    Opportunity that = (Opportunity) o;
-    return id != null && Objects.equals(id, that.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
   }
 }

@@ -1,27 +1,61 @@
 package com.albpintado.crmera.security;
 
 import com.albpintado.crmera.user.User;
-import com.albpintado.crmera.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.Collections;
 
 /*
-Service in charge of retrieving user from the repository
-that matches the email sent.
+Implements a class to hold the user that the repository
+will return when authentication process is activated.
  */
-@Service
-public class IUserDetails implements UserDetailsService {
+public class IUserDetails implements UserDetails {
 
-  @Autowired
-  private UserRepository userRepository;
+  private final User user;
+
+  public IUserDetails(User user) {
+    this.user = user;
+  }
+
+  // Returns an empty list while the application does not have roles
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return Collections.emptyList();
+  }
 
   @Override
-  public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    User user = this.userRepository.findOneByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("The user with email " + email + " does not exist."));
-    return new UserDetailsImpl(user);
+  public String getPassword() {
+    return user.getPassword();
+  }
+
+  @Override
+  public String getUsername() {
+    return user.getEmail();
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
+
+  public String getName() {
+    return user.getName();
   }
 }
