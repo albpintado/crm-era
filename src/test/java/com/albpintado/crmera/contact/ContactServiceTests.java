@@ -28,17 +28,36 @@ public class ContactServiceTests {
   @Mock
   private ContactRepository repo;
 
-  @Test
-  public void WhenGetOneThatExists_ThenShouldReturnsAContactAndStatus200() {
+  private Contact createContact() {
     Opportunity expectedOpportunity = new Opportunity();
+    expectedOpportunity.setName("Solera");
     expectedOpportunity.setId(1L);
+
     Contact expectedContact = new Contact();
     expectedContact.setId(1L);
     expectedContact.setName("Conversation with Alberto");
-    expectedContact.setDate(LocalDate.of(2022, 12, 06));
+    expectedContact.setDate(LocalDate.of(2022, 12, 6));
     expectedContact.setDetails("App development for supermarket");
     expectedContact.setMethod(ContactMethod.EMAIL);
     expectedContact.setOpportunity(expectedOpportunity);
+
+    return expectedContact;
+  }
+
+  private ContactDto createDto() {
+    ContactDto contactDto = new ContactDto();
+    contactDto.setName("Call with Alberto");
+    contactDto.setDetails("App development for supermarket");
+    contactDto.setMethod("PHONE");
+    contactDto.setDate("12-06-2022");
+    contactDto.setOpportunityName("Solera");
+
+    return contactDto;
+  }
+
+  @Test
+  public void WhenGetOneThatExists_ThenShouldReturnsAContactAndStatus200() {
+    Contact expectedContact = createContact();
 
     Mockito.when(this.repo.findById(any(Long.class))).thenReturn(Optional.of(expectedContact));
 
@@ -56,5 +75,22 @@ public class ContactServiceTests {
 
     assertThat(actualResponse.getStatusCode().value(), equalTo(204));
     assertThat(actualResponse.getBody(), is(nullValue()));
+  }
+
+  @Test
+  public void WhenUpdateOneThatExists_ThenShouldReturnsContactUpdatedAndStatus200() {
+    ContactDto contactDto = createDto();
+    Contact oldContact = createContact();
+
+    Mockito.when(this.repo.findById(any(Long.class))).thenReturn(Optional.of(oldContact));
+
+    ResponseEntity<Contact> actualResponse = this.service.update("1", contactDto);
+
+    assertThat(actualResponse.getStatusCode().value(), equalTo(200));
+    assertThat(actualResponse.getBody().getName(), equalTo(contactDto.getName()));
+    assertThat(actualResponse.getBody().getDetails(), equalTo(contactDto.getDetails()));
+    assertThat(actualResponse.getBody().getMethod(), equalTo(contactDto.getMethod()));
+    assertThat(actualResponse.getBody().getDate(), equalTo(contactDto.getDate()));
+    assertThat(actualResponse.getBody().getOpportunity().getName(), equalTo(contactDto.getOpportunityName()));
   }
 }
