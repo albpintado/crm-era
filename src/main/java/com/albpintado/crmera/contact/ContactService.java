@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +34,31 @@ public class ContactService {
     }
     return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
   }
+
+  public List<Contact> getAllByOpportunity(String id) {
+    return this.contactRepository.findByOpportunity_Id(Long.valueOf(id));
+  }
+
+  public ResponseEntity<List<Contact>> getAllByOpportunityBeforeConversion(String id) {
+    Optional<Opportunity> opportunityFromContact = this.opportunityRepository.findById(Long.valueOf(id));
+
+    if (opportunityFromContact.isPresent()) {
+      Opportunity opportunity = opportunityFromContact.get();
+      List<Contact> allContactsFromOpportunity = this.contactRepository.findByOpportunity_Id(Long.valueOf(id));
+      List<Contact> contactsBeforeConversion = new ArrayList<>();
+
+      for (Contact contact : allContactsFromOpportunity) {
+        if (contact.getDate().isBefore(opportunity.getConversionDate())) {
+          contactsBeforeConversion.add(contact);
+        }
+      }
+
+      return new ResponseEntity<>(contactsBeforeConversion, HttpStatus.OK);
+    }
+    return null;
+  }
+
+
 
   public ResponseEntity<Contact> create(ContactDto contactDto) {
     Contact contactToSave = createContactToSaveOnDb(contactDto);
