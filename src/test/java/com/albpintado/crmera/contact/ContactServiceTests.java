@@ -127,6 +127,6 @@ public class ContactServiceTests {
     Mockito.when(this.repo.findById(any(Long.class))).thenReturn(Optional.of(oldContact));
 
     ResponseEntity<Contact> actualResponse = this.service.update("1", contactDto);
-    assertThat(actualResponse.getBody().getName(), equalTo(oldContact));
+    assertThat(actualResponse.getBody().getName(), equalTo(oldContact.getName()));
   }
 }

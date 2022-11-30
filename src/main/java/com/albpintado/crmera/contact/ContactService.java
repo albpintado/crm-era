@@ -33,7 +33,7 @@ public class ContactService {
     Optional<Contact> contactFromDb = this.repo.findById(Long.valueOf(id));
     if (contactFromDb.isPresent()) {
       Contact contact = contactFromDb.get();
-      contact.setName(contactDto.getName());
+      if (contactDto.getName() != null) contact.setName(contactDto.getName());
       contact.setDetails(contactDto.getDetails());
       contact.setMethod(ContactMethod.valueOf(contactDto.getMethod()));
 
