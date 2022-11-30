@@ -31,6 +31,7 @@ public class ContactService {
 
   public ResponseEntity<Contact> update(String id, ContactDto contactDto) {
     Optional<Contact> contactFromDb = this.repo.findById(Long.valueOf(id));
+    if (contactFromDb.isPresent()) {
       Contact contact = contactFromDb.get();
       contact.setName(contactDto.getName());
       contact.setDetails(contactDto.getDetails());
@@ -43,5 +44,7 @@ public class ContactService {
 
       this.repo.save(contact);
       return new ResponseEntity<>(contact, HttpStatus.OK);
+    }
+    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
   }
 }
