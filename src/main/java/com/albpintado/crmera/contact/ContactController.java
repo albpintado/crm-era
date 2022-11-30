@@ -23,8 +23,9 @@ public class ContactController {
   }
 
   @GetMapping("/page")
-  public ResponseEntity<Map<String, Object>> getContactsInPage(@RequestParam(defaultValue = "0") int currentPage) {
-    return this.service.getContactsInPage(currentPage);
+  public ResponseEntity<Map<String, Object>> getContactsInPage(@RequestParam(required = false) String contactName,
+                                                            @RequestParam(defaultValue = "0") int currentPage) {
+    return this.service.getContactsInPage(contactName, currentPage);
   }
 
   @GetMapping("/{id}")

@@ -28,12 +28,16 @@ public class ContactService {
     return this.contactRepository.findAll();
   }
 
-  public ResponseEntity<Map<String, Object>> getContactsInPage(int currentPage) {
+  public ResponseEntity<Map<String, Object>> getContactsInPage(String contactName, int currentPage) {
     Page<Contact> contactsPage;
-
     Sort sort = Sort.by(Sort.Direction.ASC, "id");
-    PageRequest page = PageRequest.of(currentPage, 10, sort);
-    contactsPage = this.contactRepository.findAll(page);
+    PageRequest pageRequest = PageRequest.of(currentPage, 10, sort);
+
+    if (contactName == null) {
+      contactsPage = this.contactRepository.findAll(pageRequest);
+    } else {
+      contactsPage = this.contactRepository.findByNameContaining(contactName, pageRequest);
+    }
 
     Map<String, Object> contactsInPage = new HashMap<>();
     contactsInPage.put("contacts", contactsPage.getContent());
@@ -42,7 +46,7 @@ public class ContactService {
     contactsInPage.put("totalContacts", contactsPage.getTotalElements());
 
     return new ResponseEntity<>(contactsInPage, HttpStatus.OK);
-}
+  }
 
   public ResponseEntity<Contact> getOne(String id) {
     Optional<Contact> userFromDb = this.contactRepository.findById(Long.valueOf(id));
