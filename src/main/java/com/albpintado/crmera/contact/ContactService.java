@@ -35,17 +35,12 @@ public class ContactService {
   }
 
   public ResponseEntity<Contact> create(ContactDto contactDto) {
-    Contact contact = new Contact();
-    contact.setName(contactDto.getName());
-    contact.setDate(createLocalDate(contactDto.getDate()));
-    contact.setDetails(contactDto.getDetails());
-    contact.setMethod(ContactMethod.valueOf(contactDto.getMethod()));
+    Contact contactToSave = createContactToSaveOnDb(contactDto);
+    Optional<Opportunity> opportunityAssignedToContactFromDb = this.opportunityRepository.findById(contactDto.getOpportunityId());
+    opportunityAssignedToContactFromDb.ifPresent(contactToSave::setOpportunity);
 
-    Optional<Opportunity> opportunityFromDb = this.opportunityRepository.findById(contactDto.getOpportunityId());
-    opportunityFromDb.ifPresent(contact::setOpportunity);
-
-    this.contactRepository.save(contact);
-    return new ResponseEntity<>(contact, HttpStatus.CREATED);
+    this.contactRepository.save(contactToSave);
+    return new ResponseEntity<>(contactToSave, HttpStatus.CREATED);
   }
 
   public ResponseEntity<Contact> update(String id, ContactDto contactDto) {
@@ -68,6 +63,16 @@ public class ContactService {
       return new ResponseEntity<>(null, HttpStatus.OK);
     }
     return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+  }
+
+  private Contact createContactToSaveOnDb(ContactDto contactDto) {
+    Contact contact = new Contact();
+    contact.setName(contactDto.getName());
+    contact.setDate(createLocalDate(contactDto.getDate()));
+    contact.setDetails(contactDto.getDetails());
+    contact.setMethod(ContactMethod.valueOf(contactDto.getMethod()));
+
+    return contact;
   }
 
   private Contact updateContactBeforeSaveOnDb(Contact contactToUpdate, ContactDto contactDto) {
