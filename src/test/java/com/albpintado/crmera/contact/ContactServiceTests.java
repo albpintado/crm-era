@@ -141,4 +141,16 @@ public class ContactServiceTests {
     assertThat(actualResponse.getStatusCode().value(), equalTo(200));
     assertThat(actualResponse.getBody(), is(nullValue()));
   }
+
+  @Test
+  public void WhenDeleteThatDoesNotExists_ThenShouldReturnsNullAndStatus204() {
+    Contact expectedContact = createContact();
+
+    Mockito.when(this.repo.findById(any(Long.class))).thenReturn(Optional.empty());
+
+    ResponseEntity<Object> actualResponse = this.service.delete("1");
+
+    assertThat(actualResponse.getStatusCode().value(), equalTo(204));
+    assertThat(actualResponse.getBody(), is(nullValue()));
+  }
 }
