@@ -22,4 +22,9 @@ public class ContactController {
   public ResponseEntity<Contact> getOne(@PathVariable String id) {
     return this.service.getOne(id);
   }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<Contact> update(@PathVariable String id, @RequestBody ContactDto contactDto) {
+    return this.service.update(id, contactDto);
+  }
 }
