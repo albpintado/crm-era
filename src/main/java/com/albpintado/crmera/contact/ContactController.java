@@ -27,4 +27,9 @@ public class ContactController {
   public ResponseEntity<Contact> update(@PathVariable String id, @RequestBody ContactDto contactDto) {
     return this.service.update(id, contactDto);
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Object> delete(@PathVariable String id) {
+    return this.service.delete(id);
+  }
 }
