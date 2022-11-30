@@ -104,4 +104,16 @@ public class ContactServiceTests {
     assertThat(actualResponse.getBody().getDate(), equalTo(dateFromDto));
     assertThat(actualResponse.getBody().getOpportunity().getName(), equalTo(contactDto.getOpportunityName()));
   }
+
+  @Test
+  public void WhenUpdateOneThatDoesNotExists_ThenShouldReturnsNullAndStatus204() {
+    ContactDto contactDto = createDto();
+
+    Mockito.when(this.repo.findById(any(Long.class))).thenReturn(Optional.empty());
+
+    ResponseEntity<Contact> actualResponse = this.service.update("-1", contactDto);
+
+    assertThat(actualResponse.getStatusCode().value(), equalTo(204));
+    assertThat(actualResponse.getBody(), is(nullValue()));
+  }
 }
