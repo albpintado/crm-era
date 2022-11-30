@@ -129,4 +129,16 @@ public class ContactServiceTests {
     ResponseEntity<Contact> actualResponse = this.service.update("1", contactDto);
     assertThat(actualResponse.getBody().getName(), equalTo(oldContact.getName()));
   }
+
+  @Test
+  public void WhenDeleteThatExists_ThenShouldReturnsNullAndStatus200() {
+    Contact expectedContact = createContact();
+
+    Mockito.when(this.repo.findById(any(Long.class))).thenReturn(Optional.of(expectedContact));
+
+    ResponseEntity<Object> actualResponse = this.service.delete("1");
+
+    assertThat(actualResponse.getStatusCode().value(), equalTo(200));
+    assertThat(actualResponse.getBody(), is(nullValue()));
+  }
 }
