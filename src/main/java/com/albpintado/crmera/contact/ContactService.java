@@ -29,15 +29,7 @@ public class ContactService {
   }
 
   public ResponseEntity<Map<String, Object>> getContactsInPage(String contactName, int currentPage) {
-    Page<Contact> contactsPage;
-    Sort sort = Sort.by(Sort.Direction.ASC, "id");
-    PageRequest pageRequest = PageRequest.of(currentPage, 10, sort);
-
-    if (contactName == null) {
-      contactsPage = this.contactRepository.findAll(pageRequest);
-    } else {
-      contactsPage = this.contactRepository.findByNameContaining(contactName, pageRequest);
-    }
+    Page<Contact> contactsPage = createPageWithContacts(contactName, currentPage);
 
     Map<String, Object> contactsInPage = new HashMap<>();
     contactsInPage.put("contacts", contactsPage.getContent());
@@ -96,7 +88,7 @@ public class ContactService {
 
       return new ResponseEntity<>(contactsBeforeConversion, HttpStatus.OK);
     }
-    return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NO_CONTENT);
+    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
   }
 
   public ResponseEntity<Contact> create(ContactDto contactDto) {
@@ -128,6 +120,19 @@ public class ContactService {
       return new ResponseEntity<>(null, HttpStatus.OK);
     }
     return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+  }
+
+  private Page<Contact> createPageWithContacts(String contactName, int currentPage) {
+    Page<Contact> contactsPage;
+    Sort sort = Sort.by(Sort.Direction.ASC, "id");
+    PageRequest pageRequest = PageRequest.of(currentPage, 10, sort);
+
+    if (contactName == null) {
+      contactsPage = this.contactRepository.findAll(pageRequest);
+    } else {
+      contactsPage = this.contactRepository.findByNameContaining(contactName, pageRequest);
+    }
+    return contactsPage;
   }
 
   private Contact createContactToSaveOnDb(ContactDto contactDto) {
