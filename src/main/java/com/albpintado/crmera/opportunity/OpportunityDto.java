@@ -1,17 +1,19 @@
 package com.albpintado.crmera.opportunity;
 
 public class OpportunityDto {
-  private Long id;
+  private Long parentOpportunity;
   private String name;
   private String phone;
   private String email;
 
-  public Long getId() {
-    return id;
+  private boolean isCustomer;
+
+  public Long getParentOpportunity() {
+    return parentOpportunity;
   }
 
-  public void setId(Long id) {
-    this.id = id;
+  public void setParentOpportunity(Long parentOpportunity) {
+    this.parentOpportunity = parentOpportunity;
   }
 
   public String getName() {
@@ -36,5 +38,13 @@ public class OpportunityDto {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public boolean isCustomer() {
+    return isCustomer;
+  }
+
+  public void setCustomer(boolean customer) {
+    isCustomer = customer;
   }
 }

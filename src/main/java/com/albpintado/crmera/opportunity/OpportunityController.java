@@ -1,21 +1,40 @@
 package com.albpintado.crmera.opportunity;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("opportunity")
+@RequestMapping("api/opportunity")
 public class OpportunityController {
 
   @Autowired
-  private OpportunityRepository repo;
+  private OpportunityService opportunityService;
 
   @GetMapping
-  public List<Opportunity> getAll() {
-    return this.repo.findAll();
+  public ResponseEntity<List<Opportunity>> getAll() {
+    return this.opportunityService.getAll();
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<Opportunity> getOne(@PathVariable String id) {
+    return this.opportunityService.getOne(id);
+  }
+
+  @PostMapping
+  public ResponseEntity<Opportunity> create(@RequestBody OpportunityDto opportunityDto) {
+    return this.opportunityService.create(opportunityDto);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<Opportunity> update(@PathVariable String id, @RequestBody OpportunityDto opportunityDto) {
+    return this.opportunityService.update(id, opportunityDto);
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Object> delete(@PathVariable String id) {
+    return this.opportunityService.delete(id);
   }
 }

@@ -35,7 +35,7 @@ public class Opportunity {
   @Column(name = "conversion_date")
   private LocalDate conversionDate;
 
-  @ManyToOne(optional = false)
+  @ManyToOne()
   @JoinColumn(name = "parent_opportunity", nullable = true)
   @JsonBackReference
   private Opportunity opportunity;
