@@ -1,8 +1,5 @@
 package com.albpintado.crmera.opportunity;
 
-import com.albpintado.crmera.contact.Contact;
-import com.albpintado.crmera.contact.ContactDto;
-import com.albpintado.crmera.contact.ContactMethod;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,12 +10,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static com.albpintado.crmera.utils.Utils.createLocalDate;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
@@ -92,6 +91,36 @@ public class OpportunityServiceTests {
     assertThat(actualResponse.getBody().getName(), equalTo(oldOpportunity.getName()));
     assertThat(actualResponse.getBody().getEmail(), equalTo(oldOpportunity.getEmail()));
     assertThat(actualResponse.getBody().getPhone(), equalTo(oldOpportunity.getPhone()));
+  }
+
+  @Test
+  public void WhenToggleCustomerStatusToTrue_ReturnsOpportunityUpdatedAndStatus200() {
+    Opportunity opportunity = createMockOpportunity();
+    Mockito.when(this.opportunityRepository.findById(any(Long.class))).thenReturn(Optional.of(opportunity));
+
+    ResponseEntity<Opportunity> actualResponse = this.opportunityService.toggleCustomerStatus("1");
+
+    verify(this.opportunityRepository).findById(1L);
+
+    assertThat(actualResponse.getStatusCode().value(), equalTo(200));
+    assertThat(actualResponse.getBody().getIsCustomer(), equalTo(true));
+    assertThat(actualResponse.getBody().getConversionDate(), equalTo(LocalDate.now()));
+  }
+
+  @Test
+  public void WhenToggleCustomerStatusToFalse_ReturnsOpportunityUpdatedAndStatus200() {
+    Opportunity opportunity = createMockOpportunity();
+    opportunity.setIsCustomer(true);
+    opportunity.setConversionDate(LocalDate.now());
+    Mockito.when(this.opportunityRepository.findById(any(Long.class))).thenReturn(Optional.of(opportunity));
+
+    ResponseEntity<Opportunity> actualResponse = this.opportunityService.toggleCustomerStatus("1");
+
+    verify(this.opportunityRepository).findById(1L);
+
+    assertThat(actualResponse.getStatusCode().value(), equalTo(200));
+    assertThat(actualResponse.getBody().getIsCustomer(), equalTo(false));
+    assertThat(actualResponse.getBody().getConversionDate(), is(nullValue()));
   }
 
   private Opportunity createMockOpportunity() {
