@@ -34,6 +34,23 @@ public class OpportunityService {
     return new ResponseEntity<>(opportunityToSave, HttpStatus.CREATED);
   }
 
+  public ResponseEntity<Opportunity> toggleCustomerStatus(String id) {
+    Optional<Opportunity> opportunityFromDb = this.opportunityRepository.findById(Long.valueOf(id));
+    if (opportunityFromDb.isPresent()) {
+      Opportunity opportunity = opportunityFromDb.get();
+      opportunity.setIsCustomer(!opportunity.getIsCustomer());
+      if (opportunity.getIsCustomer()) {
+        opportunity.setConversionDate(LocalDate.now());
+      } else {
+        opportunity.setConversionDate(null);
+      }
+      this.opportunityRepository.save(opportunity);
+
+      return new ResponseEntity<>(opportunity, HttpStatus.OK);
+    }
+    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+  }
+
   public ResponseEntity<Opportunity> update(String id, OpportunityDto opportunityDto) {
     Optional<Opportunity> contactToUpdateFromDb = this.opportunityRepository.findById(Long.valueOf(id));
 

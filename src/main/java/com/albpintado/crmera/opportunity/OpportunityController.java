@@ -28,6 +28,11 @@ public class OpportunityController {
     return this.opportunityService.create(opportunityDto);
   }
 
+  @PostMapping("/{id}")
+  public ResponseEntity<Opportunity> toggleCustomerStatus(@PathVariable String id) {
+    return this.opportunityService.toggleCustomerStatus(id);
+  }
+
   @PutMapping("/{id}")
   public ResponseEntity<Opportunity> update(@PathVariable String id, @RequestBody OpportunityDto opportunityDto) {
     return this.opportunityService.update(id, opportunityDto);
